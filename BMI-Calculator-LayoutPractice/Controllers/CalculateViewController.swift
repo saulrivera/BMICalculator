@@ -1,14 +1,16 @@
 //
 //  ViewController.swift
-//  BMI-Calculator-LayoutPractice
-//
-//  Created by Angela Yu on 21/08/2019.
+//  BMI-Calculator
+
+//  Created by Saul Rivera on 24/02/20.
 //  Copyright © 2019 App Brewery. All rights reserved.
 //
 
 import UIKit
 
-class ViewController: UIViewController {
+class CalculateViewController: UIViewController {
+    
+    var calculatorBrain = CalculatorBrain()
     
     @IBOutlet weak var heightLabel: UILabel!
     @IBOutlet weak var weightLabel: UILabel!
@@ -17,7 +19,6 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
 
     @IBAction func heightSliderChanged(_ sender: UISlider) {
@@ -34,9 +35,18 @@ class ViewController: UIViewController {
         let height = heightSlider.value
         let weight = weightSlider.value
         
-        let bmi = weight / pow(height, 2)
-        print(bmi)
+        calculatorBrain.calculateBMI(weight: weight, height: height)
+        
+        self.performSegue(withIdentifier: "goToResult", sender: self)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goToResult" {
+            let destinationVC = segue.destination as! ResultViewController
+            destinationVC.bmiValue = calculatorBrain.getBMIValue()
+            destinationVC.advice = calculatorBrain.getAdvice()
+            destinationVC.color = calculatorBrain.getColor()
+        }
+    }
 }
 
